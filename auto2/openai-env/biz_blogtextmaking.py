@@ -8,6 +8,7 @@ from PIL import Image
 from io import BytesIO
 import matplotlib.pyplot as plt
 from openai import OpenAI
+from config import API_KEY
 
 #가상환경 세팅 openai-env\Scripts\activate
 
@@ -54,7 +55,7 @@ existing_categories_str = ", ".join(existing_categories)
 
 
 # OpenAI 클라이언트 설정
-client = OpenAI(api_key=os.environ.get("api zl"))
+client = OpenAI(api_key=os.environ.get(f"{API_KEY}"))
 # GPT 모델을 사용해 요청 처리
 
 

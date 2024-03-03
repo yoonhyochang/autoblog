@@ -4,7 +4,7 @@ import os
 import json
 import platform
 from openai import OpenAI
-
+from config import API_KEY
 
 # JSON 파일 로드 및 저장 함수
 def load_data():
@@ -44,7 +44,7 @@ def update_redundancy_prevention_file(Redundancy_prevention_new_item):
 def call_openai_api(information):
     # OpenAI 클라이언트 설정
     try:
-        client = OpenAI(api_key=os.environ.get("sk-"))
+        client = OpenAI(api_key=os.environ.get(f"{API_KEY}"))
         # GPT 모델을 사용해 요청 처리
         completion = client.chat.completions.create(
             model="gpt-4-1106-preview",

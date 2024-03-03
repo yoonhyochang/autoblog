@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import fs from "fs/promises";
+import { writeFile, unlink } from "fs/promises"; // writeFile과 unlink를 명시적으로 임포트합니다.
 
 async function getOrCreateTagId(tagName, wpUrl, wpUsername, wpPassword) {
   const tagsResponse = await fetch(
@@ -16,10 +17,8 @@ async function getOrCreateTagId(tagName, wpUrl, wpUsername, wpPassword) {
   const tags = await tagsResponse.json();
 
   if (tags.length > 0) {
-    // 태그가 이미 존재하면 첫 번째 태그의 ID 반환
     return tags[0].id;
   } else {
-    // 태그가 존재하지 않으면 새로 생성
     const createTagResponse = await fetch(`${wpUrl}/wp-json/wp/v2/tags`, {
       method: "POST",
       headers: {
@@ -35,10 +34,54 @@ async function getOrCreateTagId(tagName, wpUrl, wpUsername, wpPassword) {
   }
 }
 
+async function downloadImage(imageUrl) {
+  const response = await fetch(imageUrl);
+  if (!response.ok)
+    throw new Error(`Failed to download image: ${response.statusText}`);
+  const buffer = await response.buffer();
+  const tempPath = `downloaded_image_${Date.now()}.jpg`; // 임시 파일 이름 생성
+  await writeFile(tempPath, buffer); // 이미지를 임시 파일로 저장
+  return tempPath;
+}
+
+async function uploadImage(imagePath, wpUrl, wpUsername, wpPassword) {
+  const imageData = await fs.readFile(imagePath);
+  const response = await fetch(`${wpUrl}/wp-json/wp/v2/media`, {
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(wpUsername + ":" + wpPassword).toString("base64"),
+      "Content-Disposition":
+        'attachment; filename="' + imagePath.split("/").pop() + '"',
+      "Content-Type": "image/jpeg"
+    },
+    body: imageData
+  });
+  const data = await response.json();
+  return data.id; // 업로드된 이미지의 ID 반환
+}
+
+async function handleImageUpload(imageUrl, wpUrl, wpUsername, wpPassword) {
+  try {
+    const localImagePath = await downloadImage(imageUrl); // 이미지를 다운로드
+    const imageId = await uploadImage(
+      localImagePath,
+      wpUrl,
+      wpUsername,
+      wpPassword
+    ); // 다운로드된 이미지를 업로드하고 ID를 얻음
+    await unlink(localImagePath); // 임시 파일 삭제
+    return imageId; // 업로드된 이미지의 ID 반환
+  } catch (error) {
+    console.error("Error handling image upload:", error);
+  }
+}
+
 async function uploadPostWithTags(
   title,
   content,
-  imageUrl,
+  imageUrl, // 원격 이미지 URL
   tagNames,
   wpUrl,
   wpUsername,
@@ -50,18 +93,21 @@ async function uploadPostWithTags(
     )
   );
 
-  // 이미지 URL을 content에 HTML img 태그로 포함
-  const fullContent = `${content}<br><img src="${imageUrl}" alt="Image">`;
+  const imageId = await handleImageUpload(
+    imageUrl,
+    wpUrl,
+    wpUsername,
+    wpPassword
+  ); // 원격 이미지 처리
 
-  // 게시물 데이터 준비
   const postData = {
-    title: title,
-    content: fullContent,
+    title,
+    content,
     status: "draft",
-    tags: tagIds
+    tags: tagIds,
+    featured_media: imageId
   };
 
-  // 게시물 업로드
   const postResponse = await fetch(`${wpUrl}/wp-json/wp/v2/posts`, {
     method: "POST",
     headers: {
@@ -73,27 +119,23 @@ async function uploadPostWithTags(
     body: JSON.stringify(postData)
   });
   const post = await postResponse.json();
-  //console.log(post);
   console.log("업로드 완료");
 }
 
 async function readDataAndUploadPost() {
   try {
-    // results.json 파일에서 데이터 읽기
     const data = await fs.readFile(
       "C:/Users/yhc93/OneDrive/바탕 화면/사업문서/마/auto2/openai-env/results.json",
       "utf-8"
     );
     const jsonData = JSON.parse(data);
 
-    // jsonData.additional_info 배열의 각 항목에 대해 반복
     for (const postInfo of jsonData.additional_info) {
-      const title = postInfo[0]; // 제목
-      const content = postInfo[2]; // 내용
-      const imageUrl = postInfo[3].image_url; // 이미지 URL
-      const tagNames = postInfo[4]; // 태그 배열
+      const title = postInfo[0];
+      const content = postInfo[2];
+      const imageUrl = postInfo[3].image_url; // 원격 이미지 URL
+      const tagNames = postInfo[4];
 
-      // 게시물 업로드 함수 호출
       await uploadPostWithTags(
         title,
         content,
@@ -109,5 +151,4 @@ async function readDataAndUploadPost() {
   }
 }
 
-// 파일 읽기 및 게시물 업로드 실행
-readDataAndUploadPost();
+readDataAndUploadPost(); // 스크립트 실행
