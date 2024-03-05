@@ -143,9 +143,9 @@ async function readDataAndUploadPost() {
         content,
         imageUrl,
         tagNames,
-        "https://mamania.co.kr",
-        "yhc9308@naver.com",
-        "Xkro owAs Pcfw 5K13 SiUi 8rby"
+        "https://biz-insite.com/",
+        "yhc9308@kakao.com",
+        "s8uZ nOVT JHLK x5T8 9bq7 BkTD"
       );
     }
   } catch (error) {
