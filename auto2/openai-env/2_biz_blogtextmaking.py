@@ -74,7 +74,7 @@ for content_item in content_items:
     # 첫 번째 completion 호출
     initial_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content": f"블로그에 내용 일부분인데 ({content_items}) 이거를 사업할때 구체화를 할건데  블로그 내용을 한글로 워드 프레스(SEO 형식)에다 새롭게 작성 할 것이며, 최대한 길고 창의적으로 작성해주세요. 추가적인 설명은 넣지마."}]
+        messages=[{"role": "system", "content": f"온리팬스 사업 본격적으로 시작 할려고 구체화 할려고 하는데 너가 사업을 한다고 생각하고 또 아래에 대한 블로그 내용인데 블로그내용: 일부분: ({content_items}) 이거를 블로그 내용을 한글로 워드 프레스(SEO 형식)에다 새롭게 작성 할 것이며, 최대한 길고 창의적으로 작성해주세요. 추가적인 설명은 넣지마."}]
     )
 
 
@@ -87,7 +87,7 @@ for content_item in content_items:
     # 두 번째 completion 호출
     second_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content":  f"{first_response_text}에 대한 본문 내용인데 본문내용은 제외하고 본문마다 모두 ￭보완설명,￭예시,￭근거,￭수익 창출 방법,￭추가적인 생각을 양식에 맞춰 작성해주세요. "}]
+        messages=[{"role": "system", "content":  f"{first_response_text}에 대한 본문 내용인데 실제로 적용 한 예제와 내용을 똑같이 따라해서 바로 적용할 수있게 해줘 또 소비자 입장에서 느끼는점과 문제점들 알려줘 "}]
     )
 
 
@@ -126,7 +126,7 @@ for content_item in content_items:
     #블로그 태그
     blogtag_response = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content": f"음식 마(Dioscorea polystachya)에 대한 블로그 내용인데 {first_response_text}에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
+        messages=[{"role": "system", "content": f"사업 본격적으로 시작 할려고 구체화 할려고 하는데 너가 사업을 한다고 생각하고 또 아래에 대한 블로그 내용인데 블로그내용: 일부분: ({first_response_text}) 에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
     )
 
     # 응답 텍스트 추출
