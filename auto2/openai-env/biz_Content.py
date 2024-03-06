@@ -8,9 +8,16 @@ from threading import Thread  # Thread 임포트
 def save_to_file():
     content = text_area.get("1.0", tk.END).strip()  # 입력받은 내용을 가져오고 양쪽 공백을 제거
     Content_file_path = 'Content.json'
-    Content_data = {"Content": [content]}  # 새 내용으로 Content_data 초기화
+    
+    # 파일이 이미 존재하면 기존 데이터를 로드하고, 존재하지 않으면 새로운 데이터 구조를 생성합니다.
+    if os.path.exists(Content_file_path):
+        with open(Content_file_path, 'r', encoding='utf-8') as file:
+            Content_data = json.load(file)
+            Content_data["Content"].append(content)  # 기존 내용에 새 내용을 추가
+    else:
+        Content_data = {"Content": [content]}  # 파일이 존재하지 않으면 새 데이터 구조를 생성
 
-    # 파일에 새 데이터를 저장합니다. 파일이 이미 존재하더라도 내용을 덮어씁니다.
+    # 변경된 데이터를 파일에 저장합니다.
     with open(Content_file_path, 'w', encoding='utf-8') as file:
         json.dump(Content_data, file, ensure_ascii=False, indent=4)
     
