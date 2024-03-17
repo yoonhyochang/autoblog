@@ -390,27 +390,27 @@ for content_item in Content_data["market_research_Content"]:
 
 
 
-        # 다섯 번째 completion 호출
-    Five2_completion = client.chat.completions.create(
-        model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 시장조사를 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-    5.3 {mainKeyword}의 전략 수립안 작성법
-        1) {mainKeyword}의 사업계획서
-            (1) {mainKeyword}의 사업계획서의 구성
-        2) {mainKeyword}의 신상품/기술 Concept
-            (1) {mainKeyword}의 컨셉(Concept) 개발
-            (2) {mainKeyword}의 고객편익(Customer Benefit)
-        3) {mainKeyword}의 마케팅 전략
-            (1) {mainKeyword}의 마케팅 믹스전략(4P 전략)
-            (2) {mainKeyword}의 가격전략
-    5.4 {mainKeyword}의 실행방안 작성 및 평가
-"""
-        }]
-    )
-    # 다섯번째 응답 확인 및 출력
-    Five2_response_text = Five2_completion.choices[0].message.content
+#         # 다섯 번째 completion 호출
+#     Five2_completion = client.chat.completions.create(
+#         model="gpt-4-1106-preview",
+#         messages=[{
+#             "role": "system", 
+#             "content": f"""({content_item}) 내용을 아래방식대로 시장조사를 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#     5.3 {mainKeyword}의 전략 수립안 작성법
+#         1) {mainKeyword}의 사업계획서
+#             (1) {mainKeyword}의 사업계획서의 구성
+#         2) {mainKeyword}의 신상품/기술 Concept
+#             (1) {mainKeyword}의 컨셉(Concept) 개발
+#             (2) {mainKeyword}의 고객편익(Customer Benefit)
+#         3) {mainKeyword}의 마케팅 전략
+#             (1) {mainKeyword}의 마케팅 믹스전략(4P 전략)
+#             (2) {mainKeyword}의 가격전략
+#     5.4 {mainKeyword}의 실행방안 작성 및 평가
+# """
+#         }]
+#     )
+#     # 다섯번째 응답 확인 및 출력
+#     Five2_response_text = Five2_completion.choices[0].message.content
 
 
 
@@ -490,11 +490,12 @@ for content_item in Content_data["market_research_Content"]:
         "========================================================================================================================================" + \
         Five_response_text + \
         "========================================================================================================================================" + \
-        Five2_response_text + \
-        "========================================================================================================================================" + \
         Five3_response_text + \
         "========================================================================================================================================" + \
         six_response_text
+    
+        #     Five2_response_text + \
+        # "========================================================================================================================================" + \
 
     print(total_response_text)
 
