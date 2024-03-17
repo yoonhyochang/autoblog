@@ -125,7 +125,7 @@ async function uploadPostWithTags(
 async function readDataAndUploadPost() {
   try {
     const data = await fs.readFile(
-      "C:/Users/yhc93/OneDrive/바탕 화면/사업문서/마/auto2/openai-env/results.json",
+      "C:\\Users\\yhc93\\OneDrive\\바탕 화면\\사업문서\\마\\auto2\\openai-env\\result\\market_research_results.json",
       "utf-8"
     );
     const jsonData = JSON.parse(data);

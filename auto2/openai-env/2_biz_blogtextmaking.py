@@ -87,7 +87,7 @@ for content_item in content_items:
     # 두 번째 completion 호출
     second_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content":  f"{first_response_text}에 대한 본문 내용인데 실제로 적용 한 예제와 내용을 똑같이 따라해서 바로 적용할 수있게 해줘 또 소비자 입장에서 느끼는점과 문제점들 알려줘 "}]
+        messages=[{"role": "system", "content":  f"({first_response_text})에 대한 내용에서 본문마다 실제로 적용 한 예제와 내용을 똑같이 따라해서 바로 적용할 수있게 해줘 또 소비자 입장에서 느끼는점과 문제점들 알려줘 "}]
     )
 
 
