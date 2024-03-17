@@ -75,7 +75,7 @@ for content_item in Content_data["market_research_Content"]:
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+            "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
     1.1 {mainKeyword}의 전략 수립안 작성법
         1) {mainKeyword}의 사업계획서
             (1) {mainKeyword}의 사업계획서의 구성
@@ -106,7 +106,7 @@ for content_item in Content_data["market_research_Content"]:
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+            "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
     2.1 {mainKeyword}의 신규사업 계획 수립
         1) {mainKeyword}의 운영계획
             (1) {mainKeyword}의 수요예측 및 판매계획
@@ -136,7 +136,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     3.1 {mainKeyword}의 문제 진단 및 정의
 #         1){mainKeyword}의 Consumer Drive
 #         2){mainKeyword}의 Technology Drive
@@ -145,7 +145,7 @@ for content_item in Content_data["market_research_Content"]:
 #         1){mainKeyword}의 STP의 이해
 #         2){mainKeyword}의 시장 세분화 방법
 #             (2-1){mainKeyword}의 시장 세분화의 요구사항
-#             (2-2){mainKeyword}의 시장 세분화 절차
+#             (2-2){mainKeyword}의 시장 세분화 절차ㅌ
 #             (2-3){mainKeyword}의 시장 세분화 분류 기준
 #             (2-4){mainKeyword}의 시장 세분화 작성 자동차 시장 사례
 #             (2-5){mainKeyword}의 세분 시장별 고객 Needs 분석
@@ -175,7 +175,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     3.3 {mainKeyword}의 시장 현황 파악 방법론
 #         1) {mainKeyword}의 문헌 조사 및 2차 자료 수집 방법
 #             (1) {mainKeyword}의 자료의 종류와 자료원
@@ -206,7 +206,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     3.4 {mainKeyword}의 시장조사 문제 정의 방법론
 #         1) {mainKeyword}의 QFD (Quality Function Deployment: 품질기능전개법)
 #             (1) {mainKeyword}의 품질기능전개 (Quality Function Deployment)의 개념
@@ -237,7 +237,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     3.5 {mainKeyword}의 조사 기획서의 작성
 #         1) {mainKeyword}의 목표 설정
 #             (1) {mainKeyword}의 개념적 정의(conceptual definition)
@@ -268,7 +268,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 # 4. {mainKeyword}의 조사 방법론
 #     4.1 {mainKeyword}의 정성적 조사 방법론
 #         1) {mainKeyword}의 심층면접법
@@ -299,7 +299,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     4.2 {mainKeyword}의 정량적 조사 방법론
 #         1) {mainKeyword}의 Gang Survey
 #             (1) {mainKeyword}의 갱 서베이의 목적
@@ -329,7 +329,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     4.3 {mainKeyword}의 새로운 조사 방법론
 #         1) {mainKeyword}의 기존 시장 조사 기법의 진화
 #         2) {mainKeyword}의 소비자의 행동을 관찰하는 기법
@@ -357,7 +357,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 # 5. {mainKeyword}의 시장 조사 결과를 통한 전략 수립
 #     5.1 {mainKeyword}의 해결방안 도출의 의의
 #     5.2 {mainKeyword}의 개선 방안 도출 기법(Idea 발상법)
@@ -394,7 +394,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     5.3 {mainKeyword}의 전략 수립안 작성법
 #         1) {mainKeyword}의 사업계획서
 #             (1) {mainKeyword}의 사업계획서의 구성
@@ -419,7 +419,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 #     5.5 {mainKeyword}의 해외 시장 조사 분석 방법론
 #         1) {mainKeyword}의 해외시장 조사란 ?
 #         2) {mainKeyword}의 해외시장 조사의 의의
@@ -453,7 +453,7 @@ for content_item in Content_data["market_research_Content"]:
 #         model="gpt-4-1106-preview",
 #         messages=[{
 #             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획 수립을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+#             "content": f"""({content_item}) 내용을 아래방식대로 사업계획을 할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
 # 6. 사례 분석
 #     사례1. {mainKeyword}의 특허기술 가치평가를 위한 시장조사
 #     사례2. {mainKeyword}의 상장기업 반기보고서 및 투자설명서 작성용 시장전망조사
@@ -500,7 +500,7 @@ for content_item in Content_data["market_research_Content"]:
     print(total_response_text)
 
     # 이미지 생성을 위한 프롬프트 정의
-    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 연관하여 이미지 보여줘"
+    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 개발계획 내용과 연관하여 이미지 보여줘"
 
     # DALL-E를 사용하여 이미지 생성
     response = client.images.generate(
@@ -525,7 +525,7 @@ for content_item in Content_data["market_research_Content"]:
     #블로그 태그
     blogtag_response = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content": f"{mainKeyword}에 대한 블로그 내용인데 ({content_item})에 시장조사에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
+        messages=[{"role": "system", "content": f"{mainKeyword}에 대한 블로그 내용인데 ({content_item})에 개발계획에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
     )
 
     # 응답 텍스트 추출

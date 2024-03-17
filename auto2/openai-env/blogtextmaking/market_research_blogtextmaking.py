@@ -500,7 +500,7 @@ for content_item in Content_data["market_research_Content"]:
     print(total_response_text)
 
     # 이미지 생성을 위한 프롬프트 정의
-    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 연관하여 이미지 보여줘"
+    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 시장조사 내용과 연관하여 이미지 보여줘"
 
     # DALL-E를 사용하여 이미지 생성
     response = client.images.generate(
