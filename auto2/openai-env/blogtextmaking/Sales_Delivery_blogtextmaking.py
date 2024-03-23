@@ -59,15 +59,14 @@ content_items = [item for item in Content_data.get("Sales_Delivery_Content", [])
 
 topics_and_categories = []
 additional_info = []
-mainKeyword="마(Dioscorea opposita)와 당화혈색소"
 
 # 대화 맥락을 유지하기 위한 메시지 배열 초기화
 messages = []
 
-# 시스템 메시지에 전문가 역할 추가
+# 시스템 메시지에 전문가 역할과 맥락을 명확화하여 추가
 system_message_role = {
     "role": "system",
-    "content": "이 대화는 20년 경력의 영업 관리 전문가가 답변하는 것처럼 진행됩니다."
+    "content": "이 대화는 B2B 영업 전략, 신규 고객 개발, 가치 제안, 고객 관리 및 서비스 우수성을 포함한 다양한 산업 분야에서 20년 경력을 보유한 영업 관리 전문가의 관점으로 진행됩니다. 전문가는 고객 만족과 장기적인 관계 구축에 중점을 두며, 실제 성공 사례와 실패 사례를 통해 얻은 깊은 통찰력을 공유합니다."
 }
 messages.append(system_message_role)  # 전문가 역할을 설명하는 시스템 메시지를 메시지 배열에 추가
 
@@ -75,7 +74,7 @@ for content_item in content_items:
     # 첫 번째 요청에 대한 시스템 메시지 추가
     system_message_first = {
         "role": "system", 
-        "content": f"({content_item}) 내용을 아래 영업을 할건데, 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마."
+        "content": f"({content_item}) 내용을 분석하여 B2B 영업 전략, 신규 고객 개발, 가치 제안, 고객 관리 및 서비스 우수성을 포함한 기본과 계획에 대해 논의하고, 영업 전략의 구체적인 예시와 실제 적용 사례를 포함하여 해결 방안을 제시합니다."
     }
 
     # 첫 번째 요청
@@ -84,15 +83,24 @@ for content_item in content_items:
         messages=messages + [system_message_first, {
             "role": "user",
             "content": f"""
-1. {mainKeyword}의 영업의 기본과 계획
-    1.1. {mainKeyword}의 영업이란
-    1.2. {mainKeyword}의 영업의 위치
-    1.3. {mainKeyword}의 영업의 철학
-    1.4. {mainKeyword}의 영업사원
-    1.5. {mainKeyword}의 방문준비
-    1.6. {mainKeyword}의 상품지식
-    1.7. {mainKeyword}의 판매요점
-    1.8. {mainKeyword}의 역할연기
+             아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+1.영업의 기본과 계획
+    1.1.영업이란
+    1.2.영업의 위치
+    1.3.영업의 철학
+    1.4.영업사원
+    1.5.방문준비
+    1.6.상품지식
+    1.7.판매요점
+    1.8.역할연기
+    1.9.영업 목표 세우기
+    1.10.판매 목표 세우기
+    1.11.판매 목표 나누기
+    1.12.고객만족을 위한 마음가짐
+    1.13.서비스를 위한 마음가짐
+    1.14.마케팅을 위한 마음가짐
+    1.15.판매 지역도
+    1.16.시간관리
             """
         }]
     )
@@ -101,197 +109,133 @@ for content_item in content_items:
     messages.append(system_message_first)
     messages.append({
         "role": "assistant",
-        "content": initial_completion.choices[0].message['content']
+        "content": initial_completion.choices[0].message.content
     })
 
-    # 두 번째 요청에 대한 시스템 메시지 추가
-    system_message_second = {
-        "role": "system", 
-        "content": f"({content_item}) 내용을 아래 영업을 할건데, 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마."
-    }
+
+
 
     # 두 번째 요청
     second_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=messages + [system_message_second, {
+        messages=messages + [system_message_first, {
             "role": "user",
             "content": f"""
-2. {mainKeyword}의 영업의 실천과 행동
-    2.1. {mainKeyword}의 자기소개
-    2.2. {mainKeyword}의 구매심리
-    2.3. {mainKeyword}의 판매화법
-    2.4. {mainKeyword}의 임기응변
-    2.5. {mainKeyword}의 점두판매
+            아래 목차에 맞는 영업 실천과 행동을 구체적인 상황 예시와 함께 설명해 주세요. 특히, 고객과의 상호작용, 판매 전략, 그리고 고객 관리 방법에 대한 실제 사례를 포함해 주세요.
+2.영업의 실천과 행동
+    2.1.자기소개
+    2.2.구매심리
+    2.3.판매화법
+    2.4.임기응변
+    2.5.점두판매
+    2.6.매장연출
+    2.7.현장영업
+    2.8.신규개척
+    2.9.판촉관리
+    2.10.영업물류
+    2.11.진열관리
+    2.12.수금관리
             """
         }]
     )
 
     # 두 번째 응답을 메시지 배열에 추가
-    messages.append(system_message_second)
     messages.append({
         "role": "assistant",
-        "content": second_completion.choices[0].message['content']
+        "content": second_completion.choices[0].message.content
     })
 
+
+
+    # 두 번째2 요청
+    second_completion2 = client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+    2.13.재고관리
+    2.14.주문관리
+    2.15.가격조사
+    2.16.고충처리
+    2.17.시장조사
+    2.18.등급, 유형별 거래처 관리
+    2.19.고객접대
+    2.20.정보수집
+    2.21.대리점 전략
+    2.22.루트 판매
+
+3.영업의 점검과 평가
+    3.1.부실채권 관리
+    3.2.계수관리
+    3.3.그래프의 활용
+    3.4.문제해결
+    3.5.업적평가
+            """
+        }]
+    )
+
+    # 두 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": second_completion2.choices[0].message.content
+    })
+
+
+
+    
+
+
     # 첫 번째 및 두 번째 응답 출력
-    print("첫 번째 응답:\n", initial_completion.choices[0].message['content'])
-    first_response_text=initial_completion.choices[0].message['content']
-    print("두 번째 응답:\n", second_completion.choices[0].message['content'])
-    second_response_text=second_completion.choices[0].message['content']
+    print("첫 번째 응답:\n", initial_completion.choices[0].message.content)
+    first_response_text=initial_completion.choices[0].message.content
 
+    print("두 번째 응답:\n", second_completion.choices[0].message.content)
+    second_response_text=second_completion.choices[0].message.content
 
+    print("두 번째 응답2:\n", second_completion2.choices[0].message.content)
+    second_response_text2=second_completion2.choices[0].message.content
 
-
-
-
-# # topics와 categories 리스트의 각 항목에 대해 루프를 돌면서 출력
-# for content_item in Content_data["Sales_Delivery_Content"]:
-#     # 첫 번째 completion 호출
-#     initial_completion = client.chat.completions.create(
-#         model="gpt-4-1106-preview",
-#         messages=[{
-#             "role": "system", 
-#              "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-
-# 1. {mainKeyword}의 영업의 기본과 계획
-#     1.1. {mainKeyword}의 영업이란
-#     1.2. {mainKeyword}의 영업의 위치
-#     1.3. {mainKeyword}의 영업의 철학
-#     1.4. {mainKeyword}의 영업사원
-#     1.5. {mainKeyword}의 방문준비
-#     1.6. {mainKeyword}의 상품지식
-#     1.7. {mainKeyword}의 판매요점
-#     1.8. {mainKeyword}의 역할연기
-#     1.9. {mainKeyword}의 영업 목표 세우기
-#     1.10. {mainKeyword}의 판매 목표 세우기
-#     1.11. {mainKeyword}의 판매 목표 나누기
-#     1.12. {mainKeyword}의 고객만족을 위한 마음가짐
-#     1.13. {mainKeyword}의 서비스를 위한 마음가짐
-#     1.14. {mainKeyword}의 마케팅을 위한 마음가짐
-#     1.15. {mainKeyword}의 판매 지역도
-#     1.16. {mainKeyword}의 시간관리
-
-
-#   """
-
-#         }]
-#     )
-
-#     print(f"content_item 내용:\n{content_item}")
-#     print("content_item 내용:\n", content_item)
-
-#     # 첫 번째 응답 확인 및 출력
-#     first_response_text = initial_completion.choices[0].message.content
-#     print("첫 번째 응답:\n", first_response_text)
-
-
-
-
-#     # 두 번째 completion 호출
-#     second_completion = client.chat.completions.create(
-#         model="gpt-4-1106-preview",
-#         messages=[{
-#             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-# 2. {mainKeyword}의 영업의 실천과 행동
-#     2.1. {mainKeyword}의 자기소개
-#     2.2. {mainKeyword}의 구매심리
-#     2.3. {mainKeyword}의 판매화법
-#     2.4. {mainKeyword}의 임기응변
-#     2.5. {mainKeyword}의 점두판매
-#     2.6. {mainKeyword}의 매장연출
-#     2.7. {mainKeyword}의 현장영업
-#     2.8. {mainKeyword}의 신규개척
-#     2.9. {mainKeyword}의 판촉관리
-#     2.10. {mainKeyword}의 영업물류
-#     2.11. {mainKeyword}의 진열관리
-#     2.12. {mainKeyword}의 수금관리
-
-#   """
-#         }]
-#     )
-
-#     # 두 번째 응답 확인 및 출력
-#     second_response_text = second_completion.choices[0].message.content
-
-
-#     # 두 번째 completion2 호출
-#     second_completion2 = client.chat.completions.create(
-#         model="gpt-4-1106-preview",
-#         messages=[{
-#             "role": "system", 
-#             "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-#             d)제품/시장 성장 전략 분석
-#     2.13. {mainKeyword}의 재고관리
-#     2.14. {mainKeyword}의 주문관리
-#     2.15. {mainKeyword}의 가격조사
-#     2.16. {mainKeyword}의 고충처리
-#     2.17. {mainKeyword}의 시장조사
-#     2.18. {mainKeyword}의 등급, 유형별 거래처 관리
-#     2.19. {mainKeyword}의 고객접대
-#     2.20. {mainKeyword}의 정보수집
-#     2.21. {mainKeyword}의 대리점 전략
-#     2.22. {mainKeyword}의 루트 판매
-
-# 3. {mainKeyword}의 영업의 점검과 평가
-#     3.1. {mainKeyword}의 부실채권 관리
-#     3.2. {mainKeyword}의 계수관리
-#     3.3. {mainKeyword}의 그래프의 활용
-#     3.4. {mainKeyword}의 문제해결
-#     3.5. {mainKeyword}의 업적평가"""
-#         }]
-#     )
-
-#     # 두 번째 응답 확인 및 출력
-#     second_response_text2 = second_completion2.choices[0].message.content
 
 
     total_response_text = first_response_text + \
     "========================================================================================================================================" + \
-        second_response_text
+        second_response_text+ \
+    "========================================================================================================================================" + \
+        second_response_text2
  
 
-    # total_response_text = first_response_text + \
-    # "========================================================================================================================================" + \
-    #     second_response_text + \
-    #     "========================================================================================================================================" + \
-    #     second_response_text2
+    # 이미지 생성을 위한 프롬프트 정의
+    prompt = f"블로그에 쓰일 내용인데, '{content_item}'와 관련된 영업 전략, 고객 만남, 제품 데모 혹은 영업 회의의 모습을 포함한 전문적이고 현대적인 스타일의 이미지를 생성해주세요. 상세하고 현실적인 표현을 원합니다."
+
+    # DALL-E를 사용하여 이미지 생성
+    response = client.images.generate(
+        model="dall-e-3",
+        prompt=prompt,
+        size="1024x1024",
+        quality="standard",
+        n=1,
+    )
+
+    # 이미지 URL 추출
+    image_url = response.data[0].url
 
 
-    # print(total_response_text)
-
-    # # 이미지 생성을 위한 프롬프트 정의
-    # prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 영업에 연관하여 이미지 보여줘"
-
-    # # DALL-E를 사용하여 이미지 생성
-    # response = client.images.generate(
-    #     model="dall-e-3",
-    #     prompt=prompt,
-    #     size="1024x1024",
-    #     quality="standard",
-    #     n=1,
-    # )
-
-    # # 이미지 URL 추출
-    # image_url = response.data[0].url
-
-
-    # # 이미지 메타데이터를 JSON 파일로 저장
-    # image_metadata = {
-    #     "image_url": image_url,  # 원격 이미지 URL
-    # }
+    # 이미지 메타데이터를 JSON 파일로 저장
+    image_metadata = {
+        "image_url": image_url,  # 원격 이미지 URL
+    }
 
 
 
-    # #블로그 태그
-    # blogtag_response = client.chat.completions.create(
-    #     model="gpt-4-1106-preview",
-    #     messages=[{"role": "system", "content": f"{mainKeyword}에 대한 블로그 내용인데 ({content_item})에 영업에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
-    # )
+    #블로그 태그
+    blogtag_response = client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=[{"role": "system", "content": f"블로그에 쓰일 내용인데 ({content_item})를분석하여 초점을 맞춘 영업 전략등의 주제를 다루고 있습니다. 이와 관련하여 독자들의 관심을 끌 수 있는, 검색 최적화에 유용한 키워드 태그 5개를 제안해주세요. 숫자와 설명, '#'은 제외하고, 각 태그를 쉼표(,)로 구분하여 한글로 작성해주세요."}]
+    )
 
-    # # 응답 텍스트 추출
-    # tags_response_text = blogtag_response.choices[0].message.content
-    # tags_array = re.sub(r'[\d#. ]+', '', tags_response_text).split(',')  # 숫자, #, . 제거 후 배열로 변환
+    # 응답 텍스트 추출
+    tags_response_text = blogtag_response.choices[0].message.content
+    tags_array = re.sub(r'[\d#. ]+', '', tags_response_text).split(',')  # 숫자, #, . 제거 후 배열로 변환
 
     
 
@@ -300,8 +244,7 @@ for content_item in content_items:
     
     topic="영업"
     category="미분류"
-    # additional_info.append((topic, category, additional_response, image_metadata, tags_array))
-    additional_info.append((topic, category, additional_response))
+    additional_info.append((topic, category, additional_response, image_metadata, tags_array))
 
 # 파일 저장 경로와 이름 설정
 results_file_path = 'C:\\Users\\yhc93\\OneDrive\\바탕 화면\\사업문서\\마\\auto2\\openai-env\\result\\Sales_Delivery_results.json'

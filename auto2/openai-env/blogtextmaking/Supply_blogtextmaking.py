@@ -66,120 +66,154 @@ content_items = [item for item in Content_data.get("Supply_Content", [])]
 
 topics_and_categories = []
 additional_info = []
-mainKeyword="마(Dioscorea opposita)와 당화혈색소"
+# mainKeyword="마(Dioscorea opposita)와 당화혈색소"
 
-# topics와 categories 리스트의 각 항목에 대해 루프를 돌면서 출력
-for content_item in Content_data["Supply_Content"]:
-    # 첫 번째 completion 호출
+# 대화 맥락을 유지하기 위한 메시지 배열 초기화
+messages = []
+
+# 시스템 메시지에 전문가 역할과 맥락을 명확화하여 추가
+system_message_role = {
+    "role": "system",
+    "content": "이 대화는 공급망 관리(SCM)의 모든 측면에 대해 심층적인 지식을 가진 20년 이상의 경력을 가진 전문가가 답변하는 것처럼 진행됩니다. 이 전문가는 공급망의 개념부터 주요 흐름, 포함되는 사항, 추진 효과 및 내/외재적 기능에 이르기까지 광범위한 영역에 걸쳐 실제 경험과 사례 연구를 바탕으로 구체적인 해결 방안, 최적화 전략, 고객 가치 창출 방법을 제시할 준비가 되어 있습니다. 이 전문가는 SCM 시스템의 최적화, 물류비용 및 구매비용 절감 방법, 생산 효율화 및 총체적 경쟁 우위 달성을 위한 전략적 접근법에 대해 논의할 것입니다."
+}
+messages.append(system_message_role)  # 전문가 역할을 설명하는 시스템 메시지를 메시지 배열에 추가
+
+
+for content_item in content_items:
+    # 첫 번째 요청에 대한 시스템 메시지 추가
+    system_message_first = {
+        "role": "system", 
+        "content": f"({content_item}) 내용을 분석하여 아래 메뉴얼 대해 논의하고, 영업 전략의 구체적인 예시와 실제 적용 사례를 포함하여 해결 방안을 제시합니다."
+    }
+
+    # 첫 번째 요청
     initial_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-             "content": f"""({content_item}) 내용을 아래방식대로 생산 및 공급망 관리를를를 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
 
-1. {mainKeyword}의 개념
+1. 개념
     1.1. 물자, 정보, 재정 등이 원재료 공급업체, 도매상, 소매상, 소비자로 이동되는 흐름을 통합적으로 관리하는 시스템
     1.2. 공급망 내의 불필요한 낭비 요소를 제거한 최적화된 시스템
     1.3. 고객 가치 창출 및 경쟁 우위 달성이 최종 목표이다.
 
-2. {mainKeyword}의 SCM 주요 흐름 3가지
-    2.1. {mainKeyword}의 제품 흐름
-        1) {mainKeyword}의 공급자로부터 고객으로의 상품 이동, 물품 반환 또는 A/S 요구
-    2.2. {mainKeyword}의 정보 흐름 
+2. SCM 주요 흐름 3가지
+    2.1. 제품 흐름
+        1) 공급자로부터 고객으로의 상품 이동, 물품 반환 또는 A/S 요구
+    2.2. 정보 흐름 
         1) 주문 전달과 배송 상황 갱신 등
-    2.3. {mainKeyword}의 재정 흐름
+    2.3. 재정 흐름
         1) 신용 조건, 지불 계획, 위탁 판매, 권리 소유권 합의 등
   """
 
         }]
     )
 
-    print(f"content_item 내용:\n{content_item}")
-    print("content_item 내용:\n", content_item)
-
-    # 첫 번째 응답 확인 및 출력
-    first_response_text = initial_completion.choices[0].message.content
-    print("첫 번째 응답:\n", first_response_text)
-
-
+    # 첫 번째 응답을 메시지 배열에 추가
+    messages.append(system_message_first)
+    messages.append({
+        "role": "assistant",
+        "content": initial_completion.choices[0].message.content
+    })
 
 
-    # 두 번째 completion 호출
+
+
+    # 두 번째 요청
     second_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 생산 및 공급망 관리를 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-3. {mainKeyword}의 SCM에 포함되는 사항
-    3.1. {mainKeyword}의 경영정보 시스템
-    3.2. {mainKeyword}의 공급 및 조달
-    3.3. {mainKeyword}의 생산 계획
-    3.4. {mainKeyword}의 주문 처리
-        1) {mainKeyword}의 현금 흐름
-        2) {mainKeyword}의 재고 관리
-        3) {mainKeyword}의 창고 관리
-        4) {mainKeyword}의 고객 관리
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+             아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+3. SCM에 포함되는 사항
+    3.1. 경영정보 시스템
+    3.2. 공급 및 조달
+    3.3. 생산 계획
+    3.4. 주문 처리
+        1) 현금 흐름
+        2) 재고 관리
+        3) 창고 관리
+        4) 고객 관리
   """
         }]
     )
 
-    # 두 번째 응답 확인 및 출력
-    second_response_text = second_completion.choices[0].message.content
+    # 두 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": second_completion.choices[0].message.content
+    })
 
 
-    # 세 번째 completion 호출
-    Third_completion = client.chat.completions.create(
+
+
+    # 세 번째 요청
+    second_completion2 = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 생산 및 공급망 관리를 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-4. {mainKeyword}의 추진 효과
-    4.1. {mainKeyword}의 통합적 정보 시스템 운영
-    4.2. {mainKeyword}의 물류비용 및 구매비용 절감
-    4.3. {mainKeyword}의 고객만족, 시정 변화에 대한 대응력 강화
-    4.4. {mainKeyword}의 생산 효율화
-    4.5. {mainKeyword}의 총체적 경쟁 우위
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+            4. 추진 효과
+    4.1. 통합적 정보 시스템 운영
+    4.2. 물류비용 및 구매비용 절감
+    4.3. 고객만족, 시정 변화에 대한 대응력 강화
+    4.4. 생산 효율화
+    4.5. 총체적 경쟁 우위
             """
         }]
     )
 
     # 세번째 응답 확인 및 출력
-    Third_response_text = Third_completion.choices[0].message.content
+    messages.append({
+        "role": "assistant",
+        "content": second_completion2.choices[0].message.content
+    })
 
 
-    # 세 번째2 completion 호출
-    Third2_completion = client.chat.completions.create(
+
+    # 세 번째 요청
+    second_completion3 = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 생산 및 공급망 관리를 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-5. {mainKeyword}의 추진 효과
-    5.1. {mainKeyword}의 내재적 기능
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+5. 추진 효과
+    5.1. 내재적 기능
         1) 공급자 네트워크에 의해 공급된 원자재 등을 변형시키는 데 사용하는 여러 프로세스
         2) 고객 주문을 실제 생산 작업으로 투입하기 위한 생산 일정계획 수립
-    5.2. {mainKeyword}의 외재적 기능
-        1) {mainKeyword}의 올바른 공급자의 선정
-        2) {mainKeyword}의 공급자와 긴밀한 파트너십 유지
+    5.2. 외재적 기능
+        1) 올바른 공급자의 선정
+        2) 공급자와 긴밀한 파트너십 유지
 """
         }]
     )
-    # 세 번째 응답 확인 및 출력
-    Third2_response_text = Third2_completion.choices[0].message.content
+    #  응답 확인 및 출력
+    messages.append({
+    "role": "assistant",
+    "content": second_completion3.choices[0].message.content
+    })
 
 
-    total_response_text = first_response_text + \
-    "========================================================================================================================================" + \
-        second_response_text + \
-        "========================================================================================================================================" + \
-        Third_response_text + \
-        "========================================================================================================================================" + \
-        Third2_response_text
+
+    total_response_text = initial_completion.choices[0].message.content+\
+        second_completion.choices[0].message.content+\
+        second_completion2.choices[0].message.content+\
+        second_completion3.choices[0].message.content
+    #응답 출력
+    print("최종응답:\n", total_response_text)
 
 
-    print(total_response_text)
+
+
+    # print(total_response_text)
 
     # 이미지 생성을 위한 프롬프트 정의
-    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 생산 및 공급망 관리에 연관하여 이미지 보여줘"
+    prompt = f"블로그에 쓰일 내용인데 ({content_item})를 분석하여 생산 및 공급망 관리에 연관하여 전문적이고 현대적인 스타일의 이미지를 생성해주세요. 상세하고 현실적인 표현을 원합니다."
 
     # DALL-E를 사용하여 이미지 생성
     response = client.images.generate(
@@ -204,7 +238,7 @@ for content_item in Content_data["Supply_Content"]:
     #블로그 태그
     blogtag_response = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content": f"{mainKeyword}에 대한 블로그 내용인데 ({content_item})에 생산 및 공급망 관리에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
+        messages=[{"role": "system", "content": f"블로그에 쓰일 내용인데 ({content_item})를 분석하여 생산 및 공급망 관리에 같은 주제를 다루고 있습니다. 이와 관련하여 독자들의 관심을 끌 수 있는, 검색 최적화에 유용한 키워드 태그 5개를 제안해주세요. 숫자와 설명, '#'은 제외하고, 각 태그를 쉼표(,)로 구분하여 한글로 작성해주세요."}]
     )
 
     # 응답 텍스트 추출

@@ -66,150 +66,189 @@ content_items = [item for item in Content_data.get("financing_Content", [])]
 
 topics_and_categories = []
 additional_info = []
-mainKeyword="마(Dioscorea opposita)와 당화혈색소"
+# mainKeyword="마(Dioscorea opposita)와 당화혈색소"
 
-# topics와 categories 리스트의 각 항목에 대해 루프를 돌면서 출력
-for content_item in Content_data["financing_Content"]:
-    # 첫 번째 completion 호출
+# 대화 맥락을 유지하기 위한 메시지 배열 초기화
+messages = []
+
+# 시스템 메시지에 전문가 역할과 맥락을 명확화하여 추가
+system_message_role = {
+    "role": "system",
+    "content": "이 대화는 자금 조달에 관한 전문가의 관점으로 진행됩니다. 특히, 정책자금을 포함한 다양한 자금 조달 방법과 중소기업 및 스타트업을 위한 지원 사업의 이해, 기술 보증기금을 활용한 맞춤형 창업 성장 지원, 생존과 성장을 위한 R&D 지원사업의 중요성, 기업 인증의 역할과 재무 구조 개선의 필요성, 그리고 자금 조달 과정에서 발생할 수 있는 다양한 실패 요인에 대해 심도 있는 조언과 구체적인 사례를 통한 해결 방안을 제시합니다. 전문가는 융자, 출연, 투자를 포함한 자금 조달 옵션의 세부사항과 그 접근 방법, 중소기업진흥공단과 기술보증기금을 통한 지원 프로그램, 스타트업의 성장을 촉진하는 R&D 지원의 중요성, 기업 인증과 재무 건전성의 역할, 그리고 트렌드, 경영자 신용, 기술력 및 인력의 중요성을 포함하여, 자금 조달과 관련된 포괄적인 가이드라인을 제공합니다."
+}
+messages.append(system_message_role)  # 전문가 역할을 설명하는 시스템 메시지를 메시지 배열에 추가
+
+
+for content_item in content_items:
+    # 첫 번째 요청에 대한 시스템 메시지 추가
+    system_message_first = {
+        "role": "system", 
+        "content": f"({content_item}) 내용을 분석하여 아래 메뉴얼 대해 논의하고, 융자, 출연, 투자를 포함한 자금 조달 옵션의 세부사항과 그 접근 방법, 중소기업진흥공단과 기술보증기금을 통한 지원 프로그램, 스타트업의 성장을 촉진하는 R&D 지원의 중요성, 기업 인증과 재무 건전성의 역할, 그리고 트렌드, 경영자 신용, 기술력 및 인력의 중요성을 포함하여, 자금 조달의 구체적인 예시와 실제 적용 사례를 포함하여 해결 방안을 제시합니다."
+    }
+
+    # 첫 번째 요청
     initial_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-             "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
 
-1. {mainKeyword}의 정책자금
-    1.1. {mainKeyword}의 융자
-        1){mainKeyword}의 중진공
-        2){mainKeyword}의 기보
-        3){mainKeyword}의 신보・・・
-    1.2. {mainKeyword}의 출연
-        1){mainKeyword}의 R&D
-        2){mainKeyword}의 마케팅
-        3){mainKeyword}의 수출
-        4){mainKeyword}의 인증・・・
-    1.3. {mainKeyword}의 투자
-        1){mainKeyword}의 매칭펀드
-        2){mainKeyword}의 크라우드펀딩
+1.  정책자금
+    1.1.  융자
+        1) 중진공
+        2) 기보
+        3) 신보・・・
+    1.2.  출연
+        1) R&D
+        2) 마케팅
+        3) 수출
+        4) 인증・・・
+    1.3.  투자
+        1) 매칭펀드
+        2) 크라우드펀딩
   """
 
         }]
     )
 
-    print(f"content_item 내용:\n{content_item}")
-    print("content_item 내용:\n", content_item)
-
-    # 첫 번째 응답 확인 및 출력
-    first_response_text = initial_completion.choices[0].message.content
-    print("첫 번째 응답:\n", first_response_text)
-
-
+    # 첫 번째 응답을 메시지 배열에 추가
+    messages.append(system_message_first)
+    messages.append({
+        "role": "assistant",
+        "content": initial_completion.choices[0].message.content
+    })
 
 
-    # 두 번째 completion 호출
+
+
+    # second_completion 호출
     second_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-2. {mainKeyword}의 중소기업진흥공단
-    1.1. {mainKeyword}의 일반창업기업지원
-        1){mainKeyword}의 융자조건
-        2){mainKeyword}의 신청유의사항
-            (1){mainKeyword}의 자금조달 프로세스 숙지  
-            (2){mainKeyword}의 시설 투자의 중소기업진흥공단자금
-            (3){mainKeyword}의 청년전용창업자금
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+             아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+2.  중소기업진흥공단
+    1.1.  일반창업기업지원
+        1) 융자조건
+        2) 신청유의사항
+            (1) 자금조달 프로세스 숙지  
+            (2) 시설 투자의 중소기업진흥공단자금
+            (3) 청년전용창업자금
   """
         }]
     )
 
-    # 두 번째 응답 확인 및 출력
-    second_response_text = second_completion.choices[0].message.content
+    # 두 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": second_completion.choices[0].message.content
+    })
 
-
-    # 세 번째 completion 호출
+    # Third_completion 호출
     Third_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-2. {mainKeyword}의 기술보증기금
-    2.1. {mainKeyword}의 맞춤형 창업성장 분야 우대보증
-        1){mainKeyword}의 지식문화창업
-        2){mainKeyword}의 이공계챌린저 창업
-            (1){mainKeyword}의 기술경력 뿌리창업 
-            (2){mainKeyword}의 첨단 성장연계창업
-    2.2. {mainKeyword}의 청년창업 특례보증
-        1){mainKeyword}의 지식문화창업
-        2){mainKeyword}의 이공계챌린저 창업
-            (1){mainKeyword}의 기술경력 뿌리창업 
-            (2){mainKeyword}의 첨단 성장연계창업
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+3.  기술보증기금
+    2.1.  맞춤형 창업성장 분야 우대보증
+        1) 지식문화창업
+        2) 이공계챌린저 창업
+            (1) 기술경력 뿌리창업 
+            (2) 첨단 성장연계창업
+    2.2.  청년창업 특례보증
+        1) 지식문화창업
+        2) 이공계챌린저 창업
+            (1) 기술경력 뿌리창업 
+            (2) 첨단 성장연계창업
             """
         }]
     )
 
-    # 세번째 응답 확인 및 출력
-    Third_response_text = Third_completion.choices[0].message.content
+    # Third_completion 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion.choices[0].message.content
+    })
 
 
-    # 세 번째2 completion 호출
-    Third2_completion = client.chat.completions.create(
+
+
+
+    # Third_completion2n 호출
+    Third_completion2 = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-3. {mainKeyword}의 생존을 위한 R&D 지원사업 중요성
-    2.1. {mainKeyword}의 상환의무가 없는 정책자금
-        1){mainKeyword}의 스타트업 성장의 밑거름
-        2){mainKeyword}의 스타트업 내부 R&D 시스템 구축
-        3){mainKeyword}의 마케팅에 활용 
-    2.2. {mainKeyword}의 창업 스타트업의 R&D 지원사업
-        1){mainKeyword}의 창업 선도대학
-        2){mainKeyword}의 창업성장 기술개발사업
-        2){mainKeyword}의 TIPS기술창업투자
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+4.  생존을 위한 R&D 지원사업 중요성
+    2.1.  상환의무가 없는 정책자금
+        1) 스타트업 성장의 밑거름
+        2) 스타트업 내부 R&D 시스템 구축
+        3) 마케팅에 활용 
+    2.2.  창업 스타트업의 R&D 지원사업
+        1) 창업 선도대학
+        2) 창업성장 기술개발사업
+        2) TIPS기술창업투자
 """
         }]
     )
-    # 세 번째 응답 확인 및 출력
-    Third2_response_text = Third2_completion.choices[0].message.content
+     # Third_completio2 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion2.choices[0].message.content
+    })
 
 
 
-        # 세 번째2 completion 호출
-    Third2_completion = client.chat.completions.create(
+        # Third_completion3 호출
+    Third_completion3 = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{
-            "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-4. {mainKeyword}의 3종세트 인증을갖춰라
-    4.1 {mainKeyword}의 ISO
-    4.2 {mainKeyword}의 기업부설연구서
-    4.3 {mainKeyword}의 벤처기업 or 이노비즈
+        messages=messages + [system_message_first, {
+            "role": "user",
+            "content": f"""
+            아래 목차에 대해 심층적으로 설명하고, 성공적인전략 구축을 위한 실제 예시를 포함해 주세요.
+5.  3종세트 인증을갖춰라
+    4.1  ISO
+    4.2  기업부설연구서
+    4.3  벤처기업 or 이노비즈
 """
         }]
     )
-    # 세 번째2 응답 확인 및 출력
-    Third2_response_text = Third2_completion.choices[0].message.content
+     # Third_completion3 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion3.choices[0].message.content
+    })
 
 
 
 
-        # 세 번째2 completion 호출
-    Third3_completion = client.chat.completions.create(
+    # Third_completion4 호출
+    Third_completion4 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-5. {mainKeyword}의 재무구조를 건전하게 만들자
-    5.1. {mainKeyword}의 주요지표
-        1){mainKeyword}의 부채비율
-        2){mainKeyword}의 매출액증가율
-        3){mainKeyword}의 유동비율
-        4){mainKeyword}의 매출액영업이익률
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+6.  재무구조를 건전하게 만들자
+    5.1.  주요지표
+        1) 부채비율
+        2) 매출액증가율
+        3) 유동비율
+        4) 매출액영업이익률
         """
         }]
     )
-    # 세 번째 응답 확인 및 출력
-    Third3_response_text = Third3_completion.choices[0].message.content
+     # Third_completion4 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion4.choices[0].message.content
+    })
 
 
 
@@ -222,154 +261,160 @@ for content_item in Content_data["financing_Content"]:
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-6. {mainKeyword}의 정책자금에 탈락하는 기타요인
-    6.1. {mainKeyword}의 경영자의 낮은 신용
-    6.2 {mainKeyword}의 부족한 이력과 경력
-    6.3 {mainKeyword}의 고급 인력, 기술력 부재
-    6.4 {mainKeyword}의 트렌드에 뒤떨어지는 창업아이템
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+7.  정책자금에 탈락하는 기타요인
+    6.1.  경영자의 낮은 신용
+    6.2  부족한 이력과 경력
+    6.3  고급 인력, 기술력 부재
+    6.4  트렌드에 뒤떨어지는 창업아이템
 """
         }]
     )
-    # 네 번째 응답 확인 및 출력
-    Fourth_response_text = Fourth_completion.choices[0].message.content
+     # Fourth_completion 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Fourth_completion.choices[0].message.content
+    })
 
 
 
 
 
-
-        # 네 번째2 completion 호출
-    Fourth2_completion = client.chat.completions.create(
+    # Fourth_completion2 호출
+    Fourth_completion2 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-7. {mainKeyword}의 창업 자금 정보 제공 사이트
-    6.1. {mainKeyword}의 기업마당
-    6.2 {mainKeyword}의 K-startup
-    6.3 {mainKeyword}의 창업지원센터
-    6.4 {mainKeyword}의 중소기업기술정보진흥원
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+7.  창업 자금 정보 제공 사이트
+    6.1.  기업마당
+    6.2  K-startup
+    6.3  창업지원센터
+    6.4  중소기업기술정보진흥원
     6.5 (6.1~6.4 말고도 더보여줘)
 """
         }]
     )
-    # 네 번째2 응답 확인 및 출력
-    Fourth2_response_text = Fourth2_completion.choices[0].message.content
+     # Fourth_completion2 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Fourth_completion2.choices[0].message.content
+    })
 
 
 
 
 
-
-        # 네 번째3 completion 호출
-    Fourth3_completion = client.chat.completions.create(
+    # Fourth_completion3 호출
+    Fourth_completion3 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-8. {mainKeyword}의 R&D 지원사업 준비(창성과제 기준)
-    8.1. {mainKeyword}의 인증취득
-    8.2 {mainKeyword}의 선행특허, 연구 검토
-    8.3 {mainKeyword}의 연구원 고용 계획
-    8.4 {mainKeyword}의 연구비 책정
-    8.5 {mainKeyword}의 참여기업 선정
-    8.6 {mainKeyword}의 R&D 지원사업 매칭
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+8.  R&D 지원사업 준비(창성과제 기준)
+    8.1.  인증취득
+    8.2  선행특허, 연구 검토
+    8.3  연구원 고용 계획
+    8.4  연구비 책정
+    8.5  참여기업 선정
+    8.6  R&D 지원사업 매칭
 """
         }]
     )
-    # 네 번째3 응답 확인 및 출력
-    Fourth3_response_text = Fourth3_completion.choices[0].message.content
+     # Fourth_completion3 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Fourth_completion3.choices[0].message.content
+    })
 
 
 
 
 
-
-        # 다섯 번째 completion 호출
+    # Five_completion 호출
     Five_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-9. {mainKeyword}의 스타트업 투자 단계
-    9.1. {mainKeyword}의 Seed Money
-    9.2 {mainKeyword}의 시리즈 A
-    9.3 {mainKeyword}의 시리즈 B
-    9.4 {mainKeyword}의 시리즈 C
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+9.  스타트업 투자 단계
+    9.1.  Seed Money
+    9.2  시리즈 A
+    9.3  시리즈 B
+    9.4  시리즈 C
 
 """
         }]
     )
-    # 다섯번째 응답 확인 및 출력
-    Five_response_text = Five_completion.choices[0].message.content
+     # Five_completion 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Five_completion.choices[0].message.content
+    })
 
 
 
 
-
-        # 다섯 번째 completion 호출
-    Five2_completion = client.chat.completions.create(
+    # Five_completion2 호출
+    Five_completion2 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-10. {mainKeyword}의 IR 사업계획서 작성 요령
-    10.1. {mainKeyword}의 MILESTONE
-        1) {mainKeyword}의 투자자 유치 이후 고려 가능한 EXIT방법은(M&A,IPO 등)
-        2) {mainKeyword}의 1년차/2년차/3년차 예상 손익은?
-    10.2. {mainKeyword}의 FILANCIAL PROJEVTION
-        1) {mainKeyword}의 제품/서비스의 수익원은 무엇인가?
-    10.3. {mainKeyword}의 TEAM
-        1) {mainKeyword}의 현재 Team Member의 skill과 Experience 제품/서비스 개발에 최적화 되었는가?
-    10.4. {mainKeyword}의 DIFFRENTIATION
-        1) {mainKeyword}의 거점 시장의 경쟁재/대체재와 차별화되는 우리 제품이 지닌 핵심 Key Offering?(경쟁업체가 지니지 못한 차별화 요소는)
-    10.5. {mainKeyword}의 PRODUCT CONCEPT
-        1){mainKeyword}의 제품/서비스의 기본 컨셉은 무엇인가?
-    10.6. {mainKeyword}의 COMPETITION
-        1){mainKeyword}의 거점 시장 내 존재하는 가장 중요한 갱쟁체 또는 대체재는?
-    10.6. {mainKeyword}의 WHY NOW/CUSTOMER PAINS
-        1){mainKeyword}의 타겟 고객은 누구인가?
-        2){mainKeyword}의 왜 그들은 제품/서비스를 필요로 하는가?(타겟 고객의 문제점과 충족되지 않은 니즈는 무엇인가?)
-    10.7. {mainKeyword}의 PRODUCT AS A SOLUTION
-        1){mainKeyword}의 타겟 고객의 문제점/충족되지 않은 니즈를 해결하기 위해 구체적으로 제품/서비스가 제시하는 원리/방법은 무엇인가?
-    10.8. {mainKeyword}의 MARKET
-        1){mainKeyword}의 1차 거점 시장은 어디이며, 시장규모는?
-        2){mainKeyword}의 확장 가능한 인접시장은 어디이며, 시장규모는?(1차 거점 시장에 주로 Focus)
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+10.  IR 사업계획서 작성 요령
+    10.1.  MILESTONE
+        1)  투자자 유치 이후 고려 가능한 EXIT방법은(M&A,IPO 등)
+        2)  1년차/2년차/3년차 예상 손익은?
+    10.2.  FILANCIAL PROJEVTION
+        1)  제품/서비스의 수익원은 무엇인가?
+    10.3.  TEAM
+        1)  현재 Team Member의 skill과 Experience 제품/서비스 개발에 최적화 되었는가?
+    10.4.  DIFFRENTIATION
+        1)  거점 시장의 경쟁재/대체재와 차별화되는 우리 제품이 지닌 핵심 Key Offering?(경쟁업체가 지니지 못한 차별화 요소는)
+    10.5.  PRODUCT CONCEPT
+        1) 제품/서비스의 기본 컨셉은 무엇인가?
+    10.6.  COMPETITION
+        1) 거점 시장 내 존재하는 가장 중요한 갱쟁체 또는 대체재는?
+    10.6.  WHY NOW/CUSTOMER PAINS
+        1) 타겟 고객은 누구인가?
+        2) 왜 그들은 제품/서비스를 필요로 하는가?(타겟 고객의 문제점과 충족되지 않은 니즈는 무엇인가?)
+    10.7.  PRODUCT AS A SOLUTION
+        1) 타겟 고객의 문제점/충족되지 않은 니즈를 해결하기 위해 구체적으로 제품/서비스가 제시하는 원리/방법은 무엇인가?
+    10.8.  MARKET
+        1) 1차 거점 시장은 어디이며, 시장규모는?
+        2) 확장 가능한 인접시장은 어디이며, 시장규모는?(1차 거점 시장에 주로 Focus)
 """
         }]
     )
-    # 다섯번째 응답 확인 및 출력
-    Five2_response_text = Five2_completion.choices[0].message.content
+     # Five_completion 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Five_completion2.choices[0].message.content
+    })
 
+    # total_response_text = initial_completion.choices[0].message.content
 
-
-    total_response_text = first_response_text + \
-    "========================================================================================================================================" + \
-        second_response_text + \
-        "========================================================================================================================================" + \
-        Third_response_text + \
-        "========================================================================================================================================" + \
-        Third2_response_text + \
-        "========================================================================================================================================" + \
-        Third3_response_text + \
-        "========================================================================================================================================" + \
-        Fourth_response_text + \
-        "========================================================================================================================================" + \
-        Fourth2_response_text + \
-        "========================================================================================================================================" + \
-        Fourth3_response_text + \
-        "========================================================================================================================================" + \
-        Five_response_text + \
-        "========================================================================================================================================" + \
-        Five2_response_text
-
+    total_response_text = initial_completion.choices[0].message.content+\
+        second_completion.choices[0].message.content+\
+        Third_completion.choices[0].message.content+\
+        Third_completion2.choices[0].message.content+\
+        Third_completion3.choices[0].message.content+\
+        Third_completion4.choices[0].message.content+\
+        Fourth_completion.choices[0].message.content+\
+        Fourth_completion2.choices[0].message.content+\
+        Fourth_completion3.choices[0].message.content+\
+        Five_completion.choices[0].message.content+\
+        Five_completion2.choices[0].message.content
 
     print(total_response_text)
 
     # 이미지 생성을 위한 프롬프트 정의
-    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 자금조달에 연관하여 이미지 보여줘"
-
+    prompt = f"블로그에 쓰일 내용인데 ({content_item})를 분석하여  융자, 출연, 투자를 포함한 자금 조달 옵션의 세부사항과 그 접근 방법, 중소기업진흥공단과 기술보증기금을 통한 지원 프로그램, 스타트업의 성장을 촉진하는 R&D 지원의 중요성, 기업 인증과 재무 건전성의 역할, 그리고 트렌드, 경영자 신용, 기술력 및 인력의 중요성을 포함하여, 자금 조달 내용과 연관하여 전문적이고 현대적인 스타일의 이미지를 생성해주세요. 상세하고 현실적인 표현을 원합니다."
     # DALL-E를 사용하여 이미지 생성
     response = client.images.generate(
         model="dall-e-3",
@@ -393,7 +438,7 @@ for content_item in Content_data["financing_Content"]:
     #블로그 태그
     blogtag_response = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content": f"{mainKeyword}에 대한 블로그 내용인데 ({content_item})에 자금조달에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
+        messages=[{"role": "system", "content": f"블로그에 쓰일 내용인데 ({content_item})를 분석하여 융자, 출연, 투자를 포함한 자금 조달 옵션의 세부사항과 그 접근 방법, 중소기업진흥공단과 기술보증기금을 통한 지원 프로그램, 스타트업의 성장을 촉진하는 R&D 지원의 중요성, 기업 인증과 재무 건전성의 역할, 그리고 트렌드, 경영자 신용, 기술력 및 인력의 중요성을 포함하여, 자금 조달리에 같은 주제를 다루고 있습니다. 이와 관련하여 독자들의 관심을 끌 수 있는, 검색 최적화에 유용한 키워드 태그 5개를 제안해주세요. 숫자와 설명, '#'은 제외하고, 각 태그를 쉼표(,)로 구분하여 한글로 작성해주세요."}]
     )
 
     # 응답 텍스트 추출

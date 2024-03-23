@@ -66,45 +66,57 @@ content_items = [item for item in Content_data.get("development_Content", [])]
 
 topics_and_categories = []
 additional_info = []
-mainKeyword="마(Dioscorea opposita)와 당화혈색소"
+# 대화 맥락을 유지하기 위한 메시지 배열 초기화
+messages = []
+
+# 시스템 메시지에 전문가 역할과 맥락을 명확화하여 추가
+system_message_role = {
+    "role": "system",
+    "content": "이 대화는 브랜드 및 제품 개발 전문가의 관점으로 진행됩니다. 전문가는 신제품 개발 규정, 과정, 시장 분석, 시제품의 생산 및 평가, 개발 타당성 검토, 시생산과 최종 제품의 시장 출시 전략 등에 대한 깊이 있는 이해를 바탕으로 합니다. 이 전문가는 제품 개발 과정에서 중요한 책임과 권한을 가지며, 신제품 개발의 전체 흐름을 관리합니다. 주요 관심사는 최종 소비자, 유통 채널, 경영진의 요구를 충족시키는 동시에, 법적 및 사회적 요구 사항을 충족하는 신제품을 성공적으로 개발하고 시장에 출시하는 것입니다. 또한, 제품 개발 과정에서 발생할 수 있는 다양한 도전 과제와 기회를 식별하고, 이에 대한 구체적인 해결책과 전략을 제공합니다. 전문가는 상품기획에서부터 시제품 생산, 평가, 그리고 타당성 검토에 이르기까지의 개발 업무 플로우를 체계적으로 관리하고, 제품 개발 프로젝트의 성공을 위한 핵심 요소들을 명확하게 이해하고 적용할 수 있습니다."
+}
+messages.append(system_message_role)  # 전문가 역할을 설명하는 시스템 메시지를 메시지 배열에 추가
 
 # topics와 categories 리스트의 각 항목에 대해 루프를 돌면서 출력
-for content_item in Content_data["development_Content"]:
-    # 첫 번째 completion 호출
+for content_item in content_items:
+    # 첫 번째 요청에 대한 시스템 메시지 추가
+    system_message_first = {
+        "role": "system", 
+        "content": f"({content_item}) 내용을 분석하여 최종 소비자, 유통 채널, 경영진의 요구를 충족시키는 동시에, 법적 및 사회적 요구 사항을 충족하는 신제품을 성공적으로 개발하고 시장에 출시하는 것입니다. 또한, 제품 개발 과정에서 발생할 수 있는 다양한 도전 과제와 기회를 식별하고, 이에 대한 구체적인 해결책과 전략을 제공합니다. 전문가는 상품기획에서부터 시제품 생산, 평가, 그리고 타당성 검토에 이르기까지의 개발 업무에 대해 논의하고, 영업 전략의 구체적인 예시와 실제 적용 사례를 포함하여 해결 방안을 제시합니다."
+    }
+    # 첫 번째 요청
     initial_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-             "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-
-1. {mainKeyword}의 제품개발규정
-    1.1. {mainKeyword}의 신제품개발규정
-        1){mainKeyword}의 적용범위
-        2){mainKeyword}의 적용목적
-            (1){mainKeyword}의 최종고객
-            (2){mainKeyword}의 체인점(총판, 대리점, 가맹점)
-            (3){mainKeyword}의 최고경영자
-            (4){mainKeyword}의 법적, 사회적 관련 법규 및 규정
-            (5){mainKeyword}의 전략상 마케팅 특성
-        3){mainKeyword}의 용어 및 정의
-            (1){mainKeyword}의 신제품
-            (2){mainKeyword}의 시제품
-        4){mainKeyword}의 책임과 권한
-            (1){mainKeyword}의 대표이사
-            (2){mainKeyword}의 상품개발팀장
-            (3){mainKeyword}의 개발 담당자
-            (4){mainKeyword}의 관련부서
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+    1. 제품개발규정
+    1.1. 신제품개발규정
+        1)적용범위
+        2)적용목적
+            (1)최종고객
+            (2)체인점(총판, 대리점, 가맹점)
+            (3)최고경영자
+            (4)법적, 사회적 관련 법규 및 규정
+            (5)전략상 마케팅 특성
+        3)용어 및 정의
+            (1)신제품
+            (2)시제품
+        4)책임과 권한
+            (1)대표이사
+            (2)상품개발팀장
+            (3)개발 담당자
+            (4)관련부서
   """
 
         }]
     )
-
-    print(f"content_item 내용:\n{content_item}")
-    print("content_item 내용:\n", content_item)
-
-    # 첫 번째 응답 확인 및 출력
-    first_response_text = initial_completion.choices[0].message.content
-    print("첫 번째 응답:\n", first_response_text)
+    # 첫 번째 응답을 메시지 배열에 추가
+    messages.append(system_message_first)
+    messages.append({
+        "role": "assistant",
+        "content": initial_completion.choices[0].message.content
+    })
 
 
 
@@ -114,15 +126,16 @@ for content_item in Content_data["development_Content"]:
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-2. {mainKeyword}의 신제품 개발 PROCESS
-    1.1. {mainKeyword}의 개발 업무 Flow
-        1){mainKeyword}의 상품기획
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+2. 신제품 개발 PROCESS
+    1.1. 개발 업무 Flow
+        1)상품기획
             (1) 각 관련부서장은 소비자 Needs(요구 및 기호도), 제품Trends 및 경쟁사 제품동향 등을 파악한다.
             (2) 전 사원은 신제품 개발에 대한 정보 및 아이디어가 있는 경우 관련부서에 적절한 의사소통 수단을 이용하여 제안한다.
             (3) 상품개발팀은 인터넷 정보검색, 전문 도서 및 잡지, 시장 조사(Market Survey),전시회 참석, 인적 자원을 통한 정보 수집 등을 통하여 신제품 개발 기획 수립에 활용한다.
             (4) 정보 입수 분석 결과는 필요시 시장조사결과보고서에 기록, 유지한다.
-        2){mainKeyword}의 개발계획
+        2)개발계획
             (1) 제품 개발 담당자는 상품 기획 정보에 따라 법률적 요건, 공정 및 설비 능력 등을 파악하고 제품개발 계획서 작성하여 팀장의 승인을 득한다.
             (2) 제품 개발 계획서는 생산설비, 개발능력, 포장기술, 유효기간, 자제확보 등을 고려하여 단계별로 제품 개발 계획을 수립한다.
         3) 시제품 생산 및 평가
@@ -136,25 +149,22 @@ for content_item in Content_data["development_Content"]:
                 ③ 시제품 생산후 모니터 요원을 활용하여 품평설문조사를 실시한다.
                 ④ 필요시 특정 계층대상을 지정하여 품평설문조사를 실시할 수 있다.
                 ⑤ 품평설문조사 결과는 품평설문조사 결과보고서에 기록, 유지한다.
-
-
-
-
-
   """
         }]
     )
-
-    # 두 번째 응답 확인 및 출력
-    second_response_text = second_completion.choices[0].message.content
-
+    # 두 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": second_completion.choices[0].message.content
+    })
 
     # 세 번째 completion 호출
     Third_completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
         4) 개발 타당성 검토
             (1) 제품개발 담당자는 배합비에 따라 사전원가계산서를 작성한다.
             (2) 원, 부재료 가격은 구매가격과 업체의 납품 희망가를 근거로 하여 제품의 수율을 적용하여 Kg당 단가를 계산한다
@@ -177,124 +187,161 @@ for content_item in Content_data["development_Content"]:
             """
         }]
     )
+    # 세 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion.choices[0].message.content
+    })
 
-    # 세번째 응답 확인 및 출력
-    Third_response_text = Third_completion.choices[0].message.content
 
 
-    # 세 번째2 completion 호출
-    Third2_completion = client.chat.completions.create(
+
+    # 세 번째2 completion2 호출
+    Third_completion2 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-2. {mainKeyword}의 신제품 개발 PROCESS MAP
-    2.1. {mainKeyword}의 상품기획
-        1){mainKeyword}의 신제품 개발 정보, 아이디어, 시장조사
-        2){mainKeyword}의 신제품 개발 기획
-        3){mainKeyword}의 관련 양식(기록)
-            ① {mainKeyword}의 시장조사결과보고서
-            ② {mainKeyword}의 개발계획서
-            ③ {mainKeyword}의 시제계획서
-            ④ {mainKeyword}의 시제품제조의뢰서
-    2.2. {mainKeyword}의 개발계획
-        1){mainKeyword}의 신제품 개발 입력
-    2.3. {mainKeyword}의 시제 및 평가
-        1){mainKeyword}의 계획수립
-        2){mainKeyword}의 시제품생산
-        3){mainKeyword}의 평가, 검토 검증
-        4){mainKeyword}의 관련 양식(기록)
-            ⑤ {mainKeyword}의 Pilot실험일지
-            ⑥ {mainKeyword}의 품평설문조사결과보고서
-            ⑦ {mainKeyword}의 사전원가계산서
-            ⑧ {mainKeyword}의 개발완료보고서
-    2.4. {mainKeyword}의 타당성 검토
-        1){mainKeyword}의 개발 타당성 검토
-    2.5. {mainKeyword}의 시 생산 및 검토, 검증
-        1){mainKeyword}의 시 생산준비
-        2){mainKeyword}의 시 생산
-        3){mainKeyword}의 검토 및 검증
-        4){mainKeyword}의 관련 표준
-            (1) {mainKeyword}의 검사 및 시험규정
-            (2) {mainKeyword}의 시정/예방조치규정
-            (3) {mainKeyword}의 구매관리규정
-            (4) {mainKeyword}의 공급자관리규정
-            (5) {mainKeyword}의 고객불만관리규정
-            (6) {mainKeyword}의 수입검사지침(품목별)
-            (7) {mainKeyword}의 검사 및 시험지침(항목별)
-            (8) {mainKeyword}의 고객만족 모니터 규정
-            (9) {mainKeyword}의 체인점운영규정
-    2.5. {mainKeyword}의 설계변경
-        1){mainKeyword}의 핵심성과지표(KPI)
-            (1){mainKeyword}의 실적보고(주간,월간,분기,반기,년간)
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+2. 신제품 개발 PROCESS MAP
+    2.1. 상품기획
+        1)신제품 개발 정보, 아이디어, 시장조사
+        2)신제품 개발 기획
+        3)관련 양식(기록)
+            ① 시장조사결과보고서
+            ② 개발계획서
+            ③ 시제계획서
+            ④ 시제품제조의뢰서
+    2.2. 개발계획
+        1)신제품 개발 입력
+    2.3. 시제 및 평가
+        1)계획수립
+        2)시제품생산
+        3)평가, 검토 검증
+        4)관련 양식(기록)
+            ⑤ Pilot실험일지
+            ⑥ 품평설문조사결과보고서
+            ⑦ 사전원가계산서
+            ⑧ 개발완료보고서
 """
         }]
     )
-    # 세 번째 응답 확인 및 출력
-    Third2_response_text = Third2_completion.choices[0].message.content
+    # 세 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion2.choices[0].message.content
+    })
 
 
 
-        # 세 번째2 completion 호출
-    Third2_completion = client.chat.completions.create(
+    # 세 번째2 completion3 호출
+    Third_completion3 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-3. {mainKeyword}의 제품공급가격
-    3.1 {mainKeyword}의 권장 소비자가
-    3.2 {mainKeyword}의 최저 판매가
-    3.3 {mainKeyword}의 가맹점
-    3.4 {mainKeyword}의 대리점
-    3.5 {mainKeyword}의 총판
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+
+    2.4. 타당성 검토
+        1)개발 타당성 검토
+    2.5. 시 생산 및 검토, 검증
+        1)시 생산준비
+        2)시 생산
+        3)검토 및 검증
+        4)관련 표준
+            (1) 검사 및 시험규정
+            (2) 시정/예방조치규정
+            (3) 구매관리규정
+            (4) 공급자관리규정
+            (5) 고객불만관리규정
+            (6) 수입검사지침(품목별)
+            (7) 검사 및 시험지침(항목별)
+            (8) 고객만족 모니터 규정
+            (9) 체인점운영규정
+    2.5. 설계변경
+        1)핵심성과지표(KPI)
+            (1)실적보고(주간,월간,분기,반기,년간)
 """
         }]
     )
-    # 세 번째2 응답 확인 및 출력
-    Third2_response_text = Third2_completion.choices[0].message.content
+    # 세 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion3.choices[0].message.content
+    })
 
 
 
 
-        # 세 번째2 completion 호출
-    Third3_completion = client.chat.completions.create(
+
+
+        # 세 번째 completion4 호출
+    Third_completion4 = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[{
             "role": "system", 
-            "content": f"""({content_item}) 내용을 아래방식대로 정책자금을 마련할건데 구체적인 해답과 예시를 넣고 추가적인 설명은 넣지마.
-4. {mainKeyword}의 제품현황
-    5.1. {mainKeyword}의 제품개요
-        1){mainKeyword}의 제품명
-        2){mainKeyword}의 제품내용
-        3){mainKeyword}의 제품유형
-        4){mainKeyword}의 제품특징
-        5){mainKeyword}의 원료
-        6){mainKeyword}의 섭취또는 사용방법
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+3. 제품공급가격
+    3.1 권장 소비자가
+    3.2 최저 판매가
+    3.3 가맹점
+    3.4 대리점
+    3.5 총판
+"""
+        }]
+    )
+    # 세 번째 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion4.choices[0].message.content
+    })
+
+
+
+
+        # Third_completion5 호출
+    Third_completion5 = client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=[{
+            "role": "system", 
+            "content": f"""
+            아래 목차에 맞는 영업의 기본과 계획에 대해 심층적으로 설명하고, 성공적인 영업 전략 구축을 위한 실제 예시를 포함해 주세요.
+4. 제품현황
+    5.1. 제품개요
+        1)제품명
+        2)제품내용
+        3)제품유형
+        4)제품특징
+        5)원료
+        6)섭취또는 사용방법
         """
         }]
     )
-    # 세 번째 응답 확인 및 출력
-    Third3_response_text = Third3_completion.choices[0].message.content
+    # Third_completion5 응답을 메시지 배열에 추가
+    messages.append({
+        "role": "assistant",
+        "content": Third_completion5.choices[0].message.content
+    })
 
 
-    # total_response_text = first_response_text 
-    
-    total_response_text = first_response_text + \
-    "========================================================================================================================================" + \
-    second_response_text + \
-    "========================================================================================================================================" + \
-    Third_response_text + \
-    "========================================================================================================================================" + \
-    Third2_response_text + \
-    "========================================================================================================================================" + \
-    Third3_response_text
+    # total_response_text = initial_completion.choices[0].message.content
+
+
+    total_response_text = initial_completion.choices[0].message.content+\
+        second_completion.choices[0].message.content+\
+        Third_completion.choices[0].message.content+\
+        Third_completion2.choices[0].message.content+\
+        Third_completion3.choices[0].message.content+\
+        Third_completion4.choices[0].message.content+\
+        Third_completion5.choices[0].message.content
+
 
 
     print(total_response_text)
 
     # 이미지 생성을 위한 프롬프트 정의
-    prompt = f"블로그에 쓰일 내용인데 ({content_item})이와 제품개발 내용과 연관하여 이미지 보여줘"
-
+    prompt = f"블로그에 쓰일 내용인데 ({content_item})를 분석하여 최종 소비자, 유통 채널, 경영진의 요구를 충족시키는 동시에, 법적 및 사회적 요구 사항을 충족하는 신제품을 성공적으로 개발하고 시장에 출시하는 것입니다. 또한, 제품 개발 과정에서 발생할 수 있는 다양한 도전 과제와 기회를 식별하고, 이에 대한 구체적인 해결책과 전략을 제공합니다. 전문가는 상품기획에서부터 시제품 생산, 평가, 그리고 타당성 검토에 이르기까지의 개발 업무 내용과 연관하여 전문적이고 현대적인 스타일의 이미지를 생성해주세요. 상세하고 현실적인 표현을 원합니다."
     # DALL-E를 사용하여 이미지 생성
     response = client.images.generate(
         model="dall-e-3",
@@ -318,7 +365,7 @@ for content_item in Content_data["development_Content"]:
     #블로그 태그
     blogtag_response = client.chat.completions.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "system", "content": f"{mainKeyword}에 대한 블로그 내용인데 ({content_item})에 제품개발에 관하여 테그 5개를 작성해줘 숫자와 설명 과 #은 제외하고 ,로 구분하여 한글로 작성해줘"}]
+        messages=[{"role": "system", "content": f"블로그에 쓰일 내용인데 ({content_item})를 분석하여 최종 소비자, 유통 채널, 경영진의 요구를 충족시키는 동시에, 법적 및 사회적 요구 사항을 충족하는 신제품을 성공적으로 개발하고 시장에 출시하는 것입니다. 또한, 제품 개발 과정에서 발생할 수 있는 다양한 도전 과제와 기회를 식별하고, 이에 대한 구체적인 해결책과 전략을 제공합니다. 전문가는 상품기획에서부터 시제품 생산, 평가, 그리고 타당성 검토에 이르기까지의 개발 업무 같은 주제를 다루고 있습니다. 이와 관련하여 독자들의 관심을 끌 수 있는, 검색 최적화에 유용한 키워드 태그 5개를 제안해주세요. 숫자와 설명, '#'은 제외하고, 각 태그를 쉼표(,)로 구분하여 한글로 작성해주세요."}]
     )
 
     # 응답 텍스트 추출
